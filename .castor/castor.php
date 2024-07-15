@@ -5,6 +5,8 @@ use Castor\Attribute\AsTask;
 
 use function Castor\io;
 use function Castor\run;
+use function Castor\import;
+use Symfony\Component\Finder\Finder;
 
 import(__DIR__);
 
