@@ -9,10 +9,16 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource(paginationClientItemsPerPage: true, paginationItemsPerPage: 5)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['book:read']],
+    denormalizationContext: ['groups' => ['book:write']],
+    paginationClientItemsPerPage: true,
+    paginationItemsPerPage: 5,
+)]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'ipartial'])]
 #[ApiFilter(OrderFilter::class, properties: ['year', 'title'])]
 class Book
@@ -20,21 +26,30 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[ApiProperty(readable: false)]
+    #[ApiProperty(identifier: true)]
+    #[Groups(['book:read', 'category:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book:read', 'book:write'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "L'auteur doit être renseigné")]
     #[Assert\Length(min: 3, minMessage : "Le nom de l'auteur doit contenir au moins 3 caractères")]
+    #[Groups(['book:read', 'book:write'])]
     private ?string $author = null;
 
     #[ORM\Column(length: 4, nullable: true)]
     #[Assert\Length(exactly: 4)]
+    #[Groups(['book:read', 'book:write'])]
     private ?string $year = null;
+
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['book:read', 'book:write'])]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -73,6 +88,18 @@ class Book
     public function setYear(?string $year): static
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
