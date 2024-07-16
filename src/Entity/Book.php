@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true, paginationItemsPerPage: 5)]
@@ -23,13 +24,16 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'auteur doit être renseigné")]
+    #[Assert\Length(min: 3, minMessage : "Le nom de l'auteur doit contenir au moins 3 caractères")]
     private ?string $author = null;
 
     #[ORM\Column(length: 4, nullable: true)]
-    #[ApiProperty(writable: false)]
+    #[Assert\Length(exactly: 4)]
     private ?string $year = null;
 
     public function getId(): ?int
