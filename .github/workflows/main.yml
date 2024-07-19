@@ -12,10 +12,15 @@ jobs:
     steps:
       - name: Exécuter une action
         uses: actions/hello-world-docker-action@v1
-  new-directory:
-    runs-on: ubuntu-latest
+  macos:
+    runs-on: macos-latest
     steps:
       - name: Add new directory
         run: mkdir new_directory
       - name: List files
         run: ls -al
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: List files
+        run: ls
