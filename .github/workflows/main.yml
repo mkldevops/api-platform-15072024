@@ -15,7 +15,7 @@ jobs:
       - name: display variable
         run: echo ${{ env.VARIABLE_NAME }}
       - name: display MA_VARIABLE
-        run: echo ${{ env.MA_VARIABLE }}
+        run: echo $MA_VARIABLE
       - name: Use a Secret
         env:
           SUPER_SECRET: ${{ secrets.SECRET_NAME }}
