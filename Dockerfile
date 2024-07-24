@@ -7,6 +7,10 @@ RUN apk add --no-cache bash
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | bash
 RUN apk add symfony-cli
 
+RUN curl "https://castor.jolicode.com/install" | bash \
+    && sudo mv $HOME/.local/bin/castor /usr/local/bin/castor \
+    && sudo chmod +x /usr/local/bin/castor
+
 RUN install-php-extensions pdo_pgsql intl zip opcache
 
 # Définir le répertoire de travail dans le conteneur
